@@ -67,8 +67,10 @@ def load_results() -> dict[str, ScenarioResult] | None:
 
 def ensure_results() -> dict[str, ScenarioResult]:
     results = load_results()
-    if results is None:
-        with st.spinner("Running simulations for the first time — about 15 seconds…"):
+    # Re-compute if the file is missing OR if any expected scenario key is absent
+    # (handles stale cached pickles after new scenarios are added)
+    if results is None or not all(k in results for k in SCENARIO_ORDER):
+        with st.spinner("Running simulations — about 15 seconds…"):
             results = run_all()
             save(results)
         load_results.clear()
