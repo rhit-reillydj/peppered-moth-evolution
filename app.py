@@ -210,6 +210,144 @@ Each tab below enforces one condition while leaving the rest active,
 so you can isolate exactly what each force contributes.
         """)
 
+    with st.expander("🧬  How the Simulation Works — A Biologist's Guide"):
+        st.markdown("""
+This simulation is called an **Evolutionary Algorithm (EA)** — a computer
+program that mimics the core mechanics of natural selection to solve problems.
+Here's every piece of it explained in biological terms.
+        """)
+
+        st.markdown("---")
+
+        st.markdown("#### 🦋  The Population")
+        st.markdown("""
+We start with a **population of 100 digital moths**. Just like a real peppered
+moth population, these individuals vary in appearance and compete for survival
+in the same environment — a dark, soot-covered tree trunk.
+
+Each moth exists only as a string of genetic information. We never simulate
+behaviour, movement, or physiology. The only thing that matters is **colour**,
+because colour determines survival.
+        """)
+
+        st.markdown("#### 🧬  The Genome")
+        st.markdown("""
+Each moth carries a **genome of exactly 24 bits** — a sequence of zeros and
+ones, like a simplified chromosome. The genome is divided into three equal
+segments of 8 bits each:
+
+- **Bits 1–8** encode the moth's *red* pigment intensity (0–255)
+- **Bits 9–16** encode *green* pigment intensity (0–255)
+- **Bits 17–24** encode *blue* pigment intensity (0–255)
+
+Together these three values produce the moth's body colour — its **phenotype**.
+A genome of all zeros produces a jet-black moth; a genome of all ones produces
+a pure-white moth. Every shade in between is possible.
+
+Think of it like a real organism where a handful of loci on three separate
+chromosomes interact to produce coat colour — except here we've stripped it
+down to the simplest possible version so we can watch evolution unfold clearly.
+        """)
+
+        st.markdown("#### 🎯  Fitness")
+        st.markdown("""
+The environment is a dark tree trunk with a specific target colour:
+**RGB (40, 40, 40)** — a deep, sooty grey. Predators (birds) scan the bark and
+eat any moth that stands out visually.
+
+A moth's **fitness** is how closely its colour matches the bark. We measure the
+straight-line distance between the moth's colour and the bark colour in
+three-dimensional colour space (red, green, blue axes). A moth whose colour is
+identical to the bark has **fitness = 100%**. A pure-white moth on dark bark
+has fitness close to **0%**.
+
+> **Fitness = 1 ÷ (1 + colour distance from bark)**
+
+A moth identical to the bark has distance = 0, so fitness = 1 ÷ 1 = **100%**. A pure-white moth has a large distance, so fitness collapses toward 0%.
+
+This is directly analogous to camouflage fitness in the real peppered moth
+(*Biston betularia*) story: well-camouflaged moths survive; conspicuous moths
+are eaten before they can reproduce.
+        """)
+
+        st.markdown("#### 🏆  Selection — Survival of the Fittest")
+        st.markdown("""
+To choose which moths get to reproduce, we use **tournament selection**, which
+mirrors predation in a patchy environment:
+
+1. Pick **3 moths at random** from the population (a small "encounter group")
+2. The **best-camouflaged** of those 3 wins the tournament and is selected as a parent
+3. Repeat to choose a second parent
+
+This means fit individuals are *more likely* — but not guaranteed — to
+reproduce, exactly as in nature. A slightly less-fit moth can still breed if
+the random draw happens not to include its better-camouflaged rivals. Fitness
+is probabilistic, not deterministic.
+        """)
+
+        st.markdown("#### 💑  Mating — Crossover (Recombination)")
+        st.markdown("""
+Once two parent moths are selected, they **mate** to produce an offspring. We
+simulate **single-point crossover**, which is analogous to chromosomal
+recombination during meiosis:
+
+1. A random position along the 24-bit genome is chosen as the **crossover point**
+2. The offspring inherits the **first segment** of its genome from Parent A
+3. The offspring inherits the **second segment** from Parent B
+
+For example, if the crossover point is at position 10:
+
+| | Bits 1–10 | Bits 11–24 |
+|---|---|---|
+| **Parent A** | `0110 1001 10` | `10 1101 1010 1100` |
+| **Parent B** | `1001 0011 01` | `00 1010 0101 0011` |
+| **Offspring** | `0110 1001 10` *(from A)* | `00 1010 0101 0011` *(from B)* |
+
+The offspring gets a **mixture of both parents' colour genetics** — just as
+a real moth chick inherits a blend of melanin-production alleles from both
+parents. This shuffles existing variation into new combinations every generation.
+        """)
+
+        st.markdown("#### ☢️  Mutation")
+        st.markdown("""
+After crossover, each bit in the offspring's genome has a **2% chance of
+flipping** (0 → 1, or 1 → 0). This is the computational equivalent of a
+**point mutation** — a spontaneous change at a single nucleotide position.
+
+Mutation is the *only source of genuinely new information* in the system. Without
+it, the simulation can only rearrange alleles already present in the founding
+population. With it, novel colour variants can appear that were never present
+in any ancestor — exactly as new pigmentation alleles arise in real populations
+through mutation.
+
+A 2% per-bit rate means that, on average, about **half a bit flips per
+offspring**, producing a very slight colour shift. Occasionally a cluster of
+mutations will cause a dramatic colour jump — the equivalent of a large-effect
+mutation in a real organism.
+        """)
+
+        st.markdown("#### 🔄  Generations")
+        st.markdown("""
+We run the simulation for **150 generations**. Each generation works like this:
+
+1. **Evaluate** every moth's camouflage fitness against the bark
+2. **Select** parent pairs using tournament selection
+3. **Mate** each pair (crossover) to produce offspring
+4. **Mutate** each offspring's genome at 2% per bit
+5. **Elitism** — the single best-camouflaged moth is copied unchanged into the
+   next generation (so we never accidentally lose the best individual found so far)
+6. **Replace** the old population with the new offspring
+
+After 150 of these cycles, the population has had ample opportunity to adapt.
+We then record the best individual from the final generation as the
+**"winning" moth** for that scenario.
+
+---
+*The six scenarios below each modify one of these mechanics to test what happens
+when a Hardy-Weinberg condition is enforced — removing one evolutionary driver
+at a time.*
+        """)
+
     st.divider()
 
     # ── Overview — 2 rows of 3 ─────────────────────────────────────────
