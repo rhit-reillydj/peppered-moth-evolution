@@ -362,8 +362,9 @@ at a time.*
 
     st.write("")   # small spacer
 
+    # Row 1: the six individual-condition scenarios
     row1 = SCENARIO_ORDER[:3]
-    row2 = SCENARIO_ORDER[3:]
+    row2 = SCENARIO_ORDER[3:6]
 
     cols1 = st.columns(3, gap="medium")
     for col, key in zip(cols1, row1):
@@ -375,6 +376,13 @@ at a time.*
     for col, key in zip(cols2, row2):
         with col:
             render_overview_card(results[key])
+
+    # Row 3: the "all conditions" scenario — centred, full-width highlight
+    st.write("")
+    st.markdown("**All Five Conditions Enforced Simultaneously ↓**")
+    col_all, col_gap = st.columns([1, 2])
+    with col_all:
+        render_overview_card(results["all_conditions"])
 
     st.divider()
 

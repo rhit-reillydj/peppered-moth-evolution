@@ -1,7 +1,7 @@
 """
 precompute.py
 
-Run all six evolutionary scenarios and save the results to results.pkl.
+Run all seven evolutionary scenarios and save the results to results.pkl.
 
 Usage:
     python precompute.py
@@ -29,6 +29,7 @@ SCENARIO_ORDER = [
     "random_mating",
     "no_migration",
     "equal_reproduction",
+    "all_conditions",
 ]
 
 

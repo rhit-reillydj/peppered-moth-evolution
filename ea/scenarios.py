@@ -1,7 +1,7 @@
 """
 ea/scenarios.py
 
-Six scenario definitions and the run_scenario() orchestrator.
+Seven scenario definitions and the run_scenario() orchestrator.
 
 Each scenario is a dict with:
   - display metadata (name, hw_condition, description, biology_explanation)
@@ -200,6 +200,46 @@ SCENARIOS: dict[str, dict] = {
             "— you also need differential survival and reproduction."
         ),
         "config": _cfg(selection="random", elitism=0, equal_reproduction=True),
+    },
+
+    "all_conditions": {
+        "name": "All HW Conditions Met",
+        "hw_condition": "All five conditions enforced simultaneously",
+        "description": (
+            "Every Hardy-Weinberg condition is enforced at once: "
+            "no mutation, no selection, random mating, no migration, "
+            "and a small isolated population. "
+            "This is the closest we can get to true HW equilibrium."
+        ),
+        "biology_explanation": (
+            "This scenario enforces all five Hardy-Weinberg conditions "
+            "simultaneously, stripping away every known driver of "
+            "evolutionary change at once. "
+            "<br><br>"
+            "There is <strong>no mutation</strong> — no new alleles can appear. "
+            "Mating is <strong>completely random</strong> — camouflage gives "
+            "no advantage in finding a mate. "
+            "There is <strong>no natural selection</strong> — poorly-camouflaged "
+            "moths survive and reproduce just as well as hidden ones. "
+            "The population is <strong>small and isolated</strong> — "
+            "no outside moths ever arrive with fresh alleles. "
+            "<br><br>"
+            "The result is essentially <em>no directional evolution</em>. "
+            "The population wanders aimlessly through colour space, pushed "
+            "only by random genetic drift in a tiny gene pool. "
+            "Final colour is essentially a matter of chance — the population "
+            "is no more camouflaged after 150 generations than it was on "
+            "day one. Compare this to Normal Evolution to see just how much "
+            "work each of those five forces does when they are all active together."
+        ),
+        "config": _cfg(
+            mutation_rate=0.0,         # No mutation
+            selection="random",        # Random mating — no fitness preference
+            elitism=0,                 # No reproductive advantage for fit individuals
+            equal_reproduction=True,   # No natural selection
+            migration=False,           # No gene flow
+            population_size=12,        # Small gene pool — maximises drift
+        ),
     },
 }
 
